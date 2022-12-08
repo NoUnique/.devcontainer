@@ -1,0 +1,27 @@
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "dockerComposeFile": "../docker-compose.yml",
+  "initializeCommand": "./.devcontainer/initialize.sh",
+  "workspaceFolder": "/app/${localWorkspaceFolderBasename}",
+  "service": "dev",
+  "runServices": ["dev"],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+      "bash": {
+        "path": "/bin/bash"
+      }
+    }
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "mike-co.import-sorter"
+  ],
+  "features": {
+    "docker-in-docker": {
+      "version": "latest",
+      "moby": false
+    }
+  }
+}

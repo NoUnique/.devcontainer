@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bash
+
+USER=${USER:-dev}
+
+# make folders
+sudo mkdir -p /var/run/sshd
+mkdir -p /home/${USER}/.ssh
+
+# check for required config files, exit if not found
+[[ ! -e /home/${USER}/.ssh/id_rsa.pub ]] || \
+[[ ! -e /home/${USER}/.ssh/id_rsa ]] || \
+[[ ! -e /home/${USER}/.ssh/config ]] && \
+( echo "required config not found" && exit 1)
+
+chown -R ${USER}:${USER} /home/${USER}

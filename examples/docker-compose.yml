@@ -1,0 +1,51 @@
+version: '2.3'
+
+services:
+  dev:
+    build:
+      network: host
+      context: .
+      dockerfile: dev.Dockerfile
+      args:
+        USER: ${USER}
+        PUID: ${PUID}
+        PGID: ${PGID}
+        DOCKER_GID: ${DOCKER_GID}
+        LC: ko_KR.UTF-8
+        TZ: Asia/Seoul
+        COMPOSE_IMAGE_NAME: ${COMPOSE_IMAGE_NAME}
+    image: "${COMPOSE_IMAGE_NAME}:${USER}"
+    hostname: ${COMPOSE_IMAGE_NAME}
+    container_name: ${COMPOSE_IMAGE_NAME}_dev
+    user: ${USER}
+    environment:
+      - USER=${USER}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - DOCKER_GID=${DOCKER_GID}
+      - COMPOSE_IMAGE_NAME=${COMPOSE_IMAGE_NAME}
+    ports:
+      - '9080:8080'
+      - '9443:443'
+      - '922:22'
+    volumes:
+      - .:/app/${COMPOSE_IMAGE_NAME}:rw
+      # - /home/${USER}/.ssh:/home/${USER}/.ssh  # for sshd
+      # - /etc/ssh:/etc/ssh  # for sshd
+      - /var/run/docker.sock:/var/run/docker.sock  # for docker-in-docker
+    command:
+      - /bin/bash
+      - -c
+      - |
+        npm install;
+        bash;
+    stdin_open: true  # -i(interactive) option in docker
+    tty: true  # -t(tty) option in docker
+
+  release:
+    build:
+      network: host
+      context: ..
+    image: "nounique/${COMPOSE_IMAGE_NAME}:${IMAGE_TAG:-latest}"
+    ports:
+      - '9081:80'
