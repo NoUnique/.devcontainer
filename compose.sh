@@ -1,4 +1,6 @@
 #!/bin/bash
+# Author : NoUnique (kofmap@gmail.com)
+# Copyright 2022 NoUnique. All Rights Reserved
 
 COMPOSE_PROJECT_NAME=""
 DEFAULT_SERVICE="dev"
@@ -10,7 +12,9 @@ SCRIPT_DIR="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
 # by docker image & container naming rules
 source ${SCRIPT_DIR}/initialize.sh
-
+if [[ -f ${SCRIPT_DIR}/../container-init.sh ]]; then
+    source ${SCRIPT_DIR}/../container-init.sh
+fi
 
 # essential functions
 # (omit 'function' keyword to distinguish them from major functions)
