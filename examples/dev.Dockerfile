@@ -54,8 +54,8 @@ RUN DOCKER_GROUP=$(getent group ${DOCKER_GID} | cut -d: -f1) \
       groupadd -g ${DOCKER_GID} docker; \
     fi \
     ;
-RUN PREV_USER=$(id -nu ${PUID}) \
- && if [ $? -eq 0 ]; then \
+RUN PREV_USER=$(getent passwd ${PUID} | cut -d: -f1) \
+ && if [ "${PREV_USER}" ]; then \
       usermod \
         -m -d /home/${USER} \
         -l ${USER} -p ${USER} \
