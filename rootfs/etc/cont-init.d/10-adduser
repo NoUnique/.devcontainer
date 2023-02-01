@@ -4,10 +4,10 @@ PUID=${PUID:-1000}
 PGID=${PGID:-1000}
 USER=${USER:-dev}
 
-# TODO: change UID/GID if not same as specified in docker-compose.yml
-# groupmod -o -g "${PGID}" ${USER}
-# usermod -o -u "${PUID}" ${USER}
-# usermod -d /home/${USER} ${USER}
+# change UID/GID if not same as specified in docker-compose.yml
+groupmod -o -g "${PGID}" ${USER}
+usermod -o -u "${PUID}" ${USER}
+usermod -d /home/${USER} ${USER}
 
 # TODO: set to use sudo without password when user not exists in /etc/sudoers & /etc/sudoers.d/
 #if ! grep -q "${USER}" /etc/sudoers; then
@@ -31,6 +31,6 @@ User uid:    $(id -u ${USER})
 User gid:    $(id -g ${USER})
 -------------------------------------
 "
-chown ${USER}:${USER} /home/${USER}
 cp /.bashrc /home/${USER}/
 cp /.vimrc /home/${USER}/
+chown ${USER}:${USER} /home/${USER}
