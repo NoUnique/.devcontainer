@@ -31,6 +31,6 @@ User uid:    $(id -u ${USER})
 User gid:    $(id -g ${USER})
 -------------------------------------
 "
-cp /.bashrc /home/${USER}/
-cp /.vimrc /home/${USER}/
+cp /root/.bashrc /home/${USER}/
+cp /root/.vimrc /home/${USER}/
 chown ${USER}:${USER} /home/${USER}
