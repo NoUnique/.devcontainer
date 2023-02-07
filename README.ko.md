@@ -30,8 +30,8 @@ Docker, Docker Compose, Visual Studio Code, Remote - Containers (VSCode 확장�
 ## 구성요소
 
 DevContainer 구동을 위해서는 대개 아래 세 가지 파일이 필요합니다.
-- [`dev.Dockerfile`](../dev.Dockerfile)
-- [`docker-compose.yml`](../docker-compose.yml)
+- [`dev.Dockerfile`](./example/dev.Dockerfile)
+- [`docker-compose.yml`](./example/docker-compose.yml)
 - [`.devcontainer/devcontainer.json`](./devcontainer.json)
 
 ### Dockerfile
@@ -41,11 +41,11 @@ DevContainer 구동을 위해서는 대개 아래 세 가지 파일이 필요합
 
 본래 위 파일의 이름은 보통 'Dockerfile'이라고 작성하지만, 여기서는 개발용 이미지와 릴리즈용 이미지의 구분을 위해 아래와 같이 구분하여 사용합니다.
 
-- 개발용: [`dev.Dockerfile`](../dev.Dockerfile)
-- 릴리즈용: [`Dockerfile`](../Dockerfile)
+- 개발용: [`dev.Dockerfile`](./example/dev.Dockerfile)
+- 릴리즈용: [`Dockerfile`](./example/Dockerfile)
 
 ### docker-compose.yml
-[`docker-compose.yml`](../docker-compose.yml)파일은 [Docker Compose](https://docs.docker.com/compose/) 구동을 위한 설정파일입니다.
+[`docker-compose.yml`](./example/docker-compose.yml)파일은 [Docker Compose](https://docs.docker.com/compose/) 구동을 위한 설정파일입니다.
 `.yml`, `.yaml` 확장자를 가지는 [YAML](https://yaml.org/) 파일은 설정 작성에 자주 사용되는 키-값 구조를 가지는 파일포맷으로, 여러 컨테이너를 동시에 띄우거나 컨테이너 구동에 필요한 Docker argument를 저장해두고 사용하기 위해 사용합니다.
 
 ### devcontainer.json

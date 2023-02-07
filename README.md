@@ -31,8 +31,8 @@ are should be installed on your computer. (Linux PC)
 ## Components
 
 The following three files are usually required to run DevContainer.
-- [`dev.Dockerfile`](../dev.Dockerfile)
-- [`docker-compose.yml`](../docker-compose.yml)
+- [`dev.Dockerfile`](./example/dev.Dockerfile)
+- [`docker-compose.yml`](./example/docker-compose.yml)
 - [`.devcontainer/devcontainer.json`](./devcontainer.json)
 
 ### Dockerfile
@@ -42,11 +42,11 @@ An image made from the script is used to run a container.
 The file is not required when using the docker image that has already been created.
 Originally, the name of the script is usually 'Dockerfile', but here it is used separately as follows to distinguish between the development image and the release image.
 
-- For Development: [`dev.Dockerfile`](../dev.Dockerfile)
-- For release: [`Dockerfile`](../Dockerfile)
+- For Development: [`dev.Dockerfile`](./example/dev.Dockerfile)
+- For release: [`Dockerfile`](./example/Dockerfile)
 
 ### docker-compose.yml
-[`docker-compose.yml`](../docker-compose.yml) file is a setting file for driving [`Docker Compose`](https://docs.docker.com/compose/).
+[`docker-compose.yml`](./example/docker-compose.yml) file is a setting file for driving [`Docker Compose`](https://docs.docker.com/compose/).
 The [YAML](https://yaml.org/) file with `.yml` and `.yaml` extensions is a file format with a key-value structure that is often used to create settings, and is used to display multiple containers at the same time or to store and use the Docker argument required to drive containers.
 
 ### devcontainer.json
@@ -116,7 +116,7 @@ This is a CLI script that makes it easy to use frequently used commands without 
 
 Use the above script to run the container on the Linux PC and then connect remotely through 'Remote-SSH' in VSCode.
 
-Here, the port to be used for SSH(Secure Shell) is should be specified in [`docker-compose.yml`](./examples/docker-compose.yml).
+Here, the port to be used for SSH(Secure Shell) is should be specified in [`docker-compose.yml`](./example/docker-compose.yml).
 
 **`docker-compose.yml`**
 <pre><code>services:

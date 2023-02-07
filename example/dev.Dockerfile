@@ -1,10 +1,53 @@
-FROM node:16.18-buster
+ARG MIRROR_DOCKERIO=docker.io
+FROM ${MIRROR_DOCKERIO}/ubuntu:20.04
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
 
 # To remove debconf build warnings
 ARG DEBIAN_FRONTEND=noninteractive
+
+# Add user
+ARG USER=dev
+ARG PUID=1000
+ARG PGID=1000
+ARG DOCKER_GID=999
+RUN PREV_GROUP=$(getent group ${PGID} | cut -d: -f1) \
+ && if [ "${PREV_GROUP}" ]; then \
+      groupmod -n ${USER} ${PREV_GROUP};\
+    else \
+      groupadd -g ${PGID} ${USER}; \
+    fi \
+    ;
+RUN DOCKER_GROUP=$(getent group ${DOCKER_GID} | cut -d: -f1) \
+ && if [ ! "${DOCKER_GROUP}" ]; then \
+      groupadd -g ${DOCKER_GID} docker; \
+    fi \
+    ;
+RUN PREV_USER=$(getent passwd ${PUID} | cut -d: -f1) \
+ && if [ ${PREV_USER} ]; then \
+      usermod \
+        -m -d /home/${USER} \
+        -l ${USER} -p ${USER} \
+        -g ${USER} -aG docker \
+        ${PREV_USER}; \
+      newgrp; \
+    else \
+      useradd \
+        -m -p ${USER} \
+        -g ${USER} -G docker \
+        ${USER}; \
+    fi \
+ && echo -e "${USER}:${USER}" | chpasswd \
+    ;
+
+# Set the user as sudoer
+RUN apt-get update \
+ && apt-get install --no-install-suggests -y \
+    sudo \
+ && echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER} \
+ && chmod 0440 /etc/sudoers.d/${USER} \
+    ;
 
 # Change locale to fix encoding error on mail-parser install
 ARG LC=ko_KR.UTF-8
@@ -26,6 +69,8 @@ RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
 # Install essential programs
 RUN apt-get update \
  && apt-get install --no-install-suggests -y \
+    python3.10 \
+    python3-pip \
     openssh-server \
     unzip \
     curl \
@@ -35,46 +80,6 @@ RUN apt-get update \
     vim \
     bc \
     jq \
-    ;
-
-# Add user with sudo permission if not exists
-ARG USER=dev
-ARG PUID=1000
-ARG PGID=1000
-ARG DOCKER_GID=999
-RUN PREV_GROUP=$(getent group ${PGID} | cut -d: -f1) \
- && if [ "${PREV_GROUP}" ]; then \
-      groupmod -n ${USER} ${PREV_GROUP};\
-    else \
-      groupadd -g ${PGID} ${USER}; \
-    fi \
-    ;
-RUN DOCKER_GROUP=$(getent group ${DOCKER_GID} | cut -d: -f1) \
- && if [ ! "${DOCKER_GROUP}" ]; then \
-      groupadd -g ${DOCKER_GID} docker; \
-    fi \
-    ;
-RUN PREV_USER=$(getent passwd ${PUID} | cut -d: -f1) \
- && if [ "${PREV_USER}" ]; then \
-      usermod \
-        -m -d /home/${USER} \
-        -l ${USER} -p ${USER} \
-        -g ${USER} -aG docker \
-        ${PREV_USER}; \
-      newgrp; \
-    else \
-      useradd \
-        -m -p ${USER} \
-        -g ${USER} -G docker \
-        ${USER}; \
-    fi \
- && echo -e "${USER}:${USER}" | chpasswd \
-    ;
-RUN apt-get update \
- && apt-get install --no-install-suggests -y \
-    sudo \
- && echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER} \
- && chmod 0440 /etc/sudoers.d/${USER} \
     ;
 
 # Add s6 overlay
@@ -91,7 +96,7 @@ RUN OVERLAY_ARCH=$(uname -m) \
  && rm /tmp/s6-overlay-${OVERLAY_ARCH}.tar.xz \
     ;
 
-# add local files
+# Add local files
 COPY .devcontainer/rootfs/ /
 
 ENTRYPOINT [ "/init" ]
@@ -99,4 +104,7 @@ ENTRYPOINT [ "/init" ]
 # set working directory
 ARG COMPOSE_IMAGE_NAME=app
 WORKDIR /app/${COMPOSE_IMAGE_NAME}
-ENV PATH /app/${COMPOSE_IMAGE_NAME}/node_modules/.bin:$PATH
+ENV PYTHONPATH=/app/${COMPOSE_IMAGE_NAME}
+ADD ./requirements.txt ./
+USER ${USER:-dev}
+RUN pip3 install -r requirements.txt

@@ -24,28 +24,24 @@ services:
       - PGID=${PGID}
       - DOCKER_GID=${DOCKER_GID}
       - COMPOSE_IMAGE_NAME=${COMPOSE_IMAGE_NAME}
-    ports:
-      - '9080:8080'
-      - '9443:443'
-      - '922:22'
     volumes:
       - .:/app/${COMPOSE_IMAGE_NAME}:rw
       # - /home/${USER}/.ssh:/home/${USER}/.ssh  # for sshd
       # - /etc/ssh:/etc/ssh  # for sshd
       - /var/run/docker.sock:/var/run/docker.sock  # for docker-in-docker
+      - /usr/bin/docker:/usr/bin/docker  # for docker-in-docker
+      - /usr/local/bin/docker-compose:/usr/bin/docker-compose  # for docker-in-docker
     command:
+      - /usr/bin/with-contenv  # to get environmental variables with s6-overlay
       - /bin/bash
       - -c
       - |
-        npm install;
-        bash;
+        bash
     stdin_open: true  # -i(interactive) option in docker
     tty: true  # -t(tty) option in docker
 
   release:
     build:
       network: host
-      context: ..
+      context: .
     image: "nounique/${COMPOSE_IMAGE_NAME}:${IMAGE_TAG:-latest}"
-    ports:
-      - '9081:80'
