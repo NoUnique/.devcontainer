@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 PROJECT_DIR="$(dirname -- "${SCRIPT_DIR}")"
 DIRNAME="${PROJECT_DIR##*/}"
 
-export COMPOSE_IMAGE_NAME=${COMPOSE_PROJECT_NAME:="$(echo "${DIRNAME}" | sed 's/[^0-9a-zA-Z_-]*//g' | sed 's/^[0-9]*//g' | tr '_' '-' | tr '[A-Z]' '[a-z]')"}
+export COMPOSE_IMAGE_NAME=${COMPOSE_PROJECT_NAME:="$(echo "${DIRNAME}" | sed 's/^[^0-9a-zA-Z]//g; s/[^0-9a-zA-Z_.-]//g; s/[_.-]/-/g' | tr '[A-Z]' '[a-z]')"}
 export COMPOSE_PROJECT_NAME="${USER}_${COMPOSE_PROJECT_NAME}"
 export USER=${USER}
 export PUID=${UID}
