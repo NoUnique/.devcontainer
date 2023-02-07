@@ -1,16 +1,18 @@
-# `Visual Studio Code - DevContainer`
+# Visual Studio Code - DevContainer
+
+**English**　|　[한국어](README.ko.md)
 
 ## Descriptions
 
-> [**`Visual Studio Code Remote - Containers`** extension lets us use
+> [**Visual Studio Code Remote - Containers** extension lets us use
 > a Docker container as a full-featured development environment.](https://code.visualstudio.com/docs/remote/create-dev-container)
 
 It is very complicated to match and update the dependencies between the different components needed to develop the program.  
 If you store a well-organized development environment separately and call the environment when necessary, it is very easy to reproduce the development environment or share the development environment among various developers.
 
-This document describes how to save the above development environment as an image using [`Docker`](https://docs.docker.com/engine/), [`Docker Compose`](https://docs.docker.com/compose/), and [`Visual Studio Code`](https://code.visualstudio.com/docs) and call and use it as a container as needed.
+This document describes how to save the above development environment as an image using [Docker](https://docs.docker.com/engine/), [Docker Compose](https://docs.docker.com/compose/), and [Visual Studio Code](https://code.visualstudio.com/docs) and call and use it as a container as needed.
 
-In the Windows environment without Docker Desktop, **[CLI Script](../.devcontainer/compose.sh) can be an alternative**.
+In the Windows environment without Docker Desktop, **[CLI Script](./compose.sh) can be an alternative**.
 
 ---
 
@@ -19,10 +21,10 @@ In the Windows environment without Docker Desktop, **[CLI Script](../.devcontain
 Docker, Docker Compose, Visual Studio Code, and Remote - Containers (extension of VSCode)
 are should be installed on your computer. (Linux PC)  
 (For Windows PCs, Visual Studio Code must be installed, and Linux PCs with Docker and Docker Compose is required)
-- `Docker`: <https://docs.docker.com/get-docker/>
-- `Docker Compose`: <https://docs.docker.com/compose/install/>
-- `Visual Studio Code`: <https://code.visualstudio.com/download>
-- `Remote - Containers`: <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>
+- Docker: <https://docs.docker.com/get-docker/>
+- Docker Compose: <https://docs.docker.com/compose/install/>
+- Visual Studio Code: <https://code.visualstudio.com/download>
+- Remote - Containers: <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>
 
 ---
 
@@ -64,7 +66,7 @@ Once all of the above settings are complete, development can begin inside the co
 ## Run DevContainer (Windows OS)
 
 There are many restrictions on configuring the development environment using Windows OS.  
-By combining WSL and Docker Desktop, Windows PCs were able to establish a development environment almost similar to Linux PCs, but it is difficult to configure the environment through that method.
+By combining WSL and Docker Desktop, Windows PCs were able to establish a development environment almost similar to Linux PCs, but it is still difficult to configure GPU development environment through that method.
 
 Although all developers can use Docker Desktop and WSL in Windows PCs, but it is not recommended due to various limitations and difficulty in debugging.  
 This document only deals with how to run a container on a Linux PC and then connect it remotely(`Remote - SSH`) using Windows PC to develop codes.
@@ -110,7 +112,7 @@ This is a CLI script that makes it easy to use frequently used commands without 
     $ .devcontainer/compose.sh --tag=v1.0.1-a0 --service=release -p
     ```
 
-### `Remote - SSH`
+### Remote - SSH
 
 Use the above script to run the container on the Linux PC and then connect remotely through 'Remote-SSH' in VSCode.
 
