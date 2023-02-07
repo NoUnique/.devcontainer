@@ -116,10 +116,11 @@ function fn_configure() {
     DO_DOWN=${DO_DOWN:="FALSE"}
     DO_PUSH=${DO_PUSH:="FALSE"}
     IMAGE_TAG=${IMAGE_TAG:=""}
+    ENV_ARG=${ENV_ARG:=""}
 }
 
 function fn_is_running() {
-    IS_RUNNING=`docker ps -q --no-trunc | grep "$(docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} ps -q ${DEFAULT_SERVICE})"`
+    IS_RUNNING=`docker ps -q --no-trunc | grep "$(docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} ps -q ${DEFAULT_SERVICE})"`
     if [[ "${IS_RUNNING}" != "FALSE" ]] && [[ -n "${IS_RUNNING}" ]]; then
         IS_RUNNING="TRUE"
     fi
@@ -127,12 +128,17 @@ function fn_is_running() {
 
 function fn_check_release() {
     if [[ "${IS_RELEASE}" == "TRUE" ]]; then
-        DEFAULT_SERVICE="release"
+        if [[ "${DEFAULT_SERVICE#release*}" == "${DEFAULT_SERVICE}" ]]; then
+            DEFAULT_SERVICE="release"
+        fi
+    fi
+        if [ -f ${SCRIPT_DIR}/../.env.${DEFAULT_SERVICE} ]; then
+        ENV_ARG="--env-file ${SCRIPT_DIR}/../.env.${DEFAULT_SERVICE}"
     fi
 }
 
 function fn_is_exist() {
-    IS_EXIST=`docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} ps -q ${DEFAULT_SERVICE}`
+    IS_EXIST=`docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} ps -q ${DEFAULT_SERVICE}`
     if [[ "${IS_EXIST}" != "FALSE" ]] && [[ -n "${IS_EXIST}" ]]; then
         IS_EXIST="TRUE"
     fi
@@ -140,7 +146,7 @@ function fn_is_exist() {
 
 function fn_build() {
     echo "Build '${COMPOSE_PROJECT_NAME}' docker image"
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} build ${NO_CACHE} ${DEFAULT_SERVICE}
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} build ${NO_CACHE} ${DEFAULT_SERVICE}
 }
 
 function fn_run() {
@@ -149,7 +155,7 @@ function fn_run() {
         fn_down
     fi
     echo "Run '${COMPOSE_PROJECT_NAME}' docker container"
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} up -d ${DEFAULT_SERVICE}
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} up -d ${DEFAULT_SERVICE}
 }
 
 function fn_bash() {
@@ -158,7 +164,7 @@ function fn_bash() {
         fn_run
     fi
     echo "Connect to shell of '${COMPOSE_PROJECT_NAME}' docker container"
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} exec ${DEFAULT_SERVICE} /bin/bash
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} exec ${DEFAULT_SERVICE} /bin/bash
 }
 
 function fn_log() {
@@ -170,7 +176,7 @@ function fn_log() {
     fi
     echo "Connect to logs of '${COMPOSE_PROJECT_NAME}' docker container"
     echo ${DEFAULT_SERVICE}
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} logs -t -f ${DEFAULT_SERVICE}
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} logs -t -f ${DEFAULT_SERVICE}
 }
 
 function fn_exec() {
@@ -180,14 +186,14 @@ function fn_exec() {
         fn_run
     fi
     echo "Execute '${EXECUTABLE}' in '${COMPOSE_PROJECT_NAME}' docker container"
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} exec ${DEFAULT_SERVICE} ${EXECUTABLE}
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} exec ${DEFAULT_SERVICE} ${EXECUTABLE}
 }
 
 function fn_kill() {
     fn_is_running
     if [[ "${IS_RUNNING}" == "TRUE" ]]; then
         echo "Kill '${COMPOSE_PROJECT_NAME}' docker container"
-        docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} kill
+        docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} kill
     else
         echo "There is no running '${COMPOSE_PROJECT_NAME}' docker container"
     fi
@@ -197,7 +203,7 @@ function fn_down() {
     fn_is_exist
     if [[ "${IS_EXIST}" == "TRUE" ]]; then
         echo "Down '${COMPOSE_PROJECT_NAME}' docker container"
-        docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} down -v
+        docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} down -v
     fi
 }
 
@@ -258,7 +264,7 @@ function fn_push() {
     fi
     export IMAGE_TAG
     fn_build
-    docker-compose -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} push ${DEFAULT_SERVICE}
+    docker-compose ${ENV_ARG} -f ${SCRIPT_DIR}/${COMPOSE_FNAME} -p ${COMPOSE_PROJECT_NAME} push ${DEFAULT_SERVICE}
 }
 
 function fn_main() {

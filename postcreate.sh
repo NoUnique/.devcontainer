@@ -12,3 +12,14 @@ if [ -f ${EXTENSION_CONFIG} ]; then
     ${CODE_BIN} --install-extension ${i}
   done
 fi
+
+# hack: read service-wise dotenv file and export variables to bashrc
+DOTENV_FILE=".env.dev"
+if [ -f ${DOTENV_FILE} ]; then
+  source ${DOTENV_FILE}
+  cat ${DOTENV_FILE} | awk '!/^\s*#/' | awk '!/^\s*$/' | while IFS='' read -r line; do
+    key=$(echo "$line" | cut -d '=' -f 1)
+    value=$(echo "$line" | cut -d '=' -f 2-)
+    echo "export $key=\"$value\"" >> ~/.bashrc
+  done
+fi
