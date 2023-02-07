@@ -1,7 +1,8 @@
 {
   "name": "${localWorkspaceFolderBasename}",
-  "dockerComposeFile": "../docker-compose.yml",
-  "initializeCommand": "./.devcontainer/initialize.sh",
+  "dockerComposeFile": "${localWorkspaceFolder}docker-compose.yml",
+  "initializeCommand": "${localWorkspaceFolder}/.devcontainer/initialize.sh",
+  "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/postcreate.sh",
   "workspaceFolder": "/app/${localWorkspaceFolderBasename}",
   "service": "dev",
   "runServices": ["dev"],
@@ -11,17 +12,6 @@
       "bash": {
         "path": "/bin/bash"
       }
-    }
-  },
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "mike-co.import-sorter"
-  ],
-  "features": {
-    "docker-in-docker": {
-      "version": "latest",
-      "moby": false
     }
   }
 }
