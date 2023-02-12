@@ -7,14 +7,6 @@ SHELL ["/bin/bash", "-c"]
 # To remove debconf build warnings
 ARG DEBIAN_FRONTEND=noninteractive
 
-## Set proxy & ca-certificates
-ARG SET_PROXY_SETTING
-ARG http_proxy
-ARG https_proxy
-ARG no_proxy
-COPY .devcontainer/set_proxy_setting.sh /tmp/set_proxy_setting.sh
-RUN sh /tmp/set_proxy_setting.sh
-
 # Change locale to fix encoding error on mail-parser install
 ARG LC=ko_KR.UTF-8
 RUN apt-get update \
