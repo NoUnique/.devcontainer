@@ -1,6 +1,6 @@
 {
   "name": "${localWorkspaceFolderBasename}",
-  "dockerComposeFile": "${localWorkspaceFolder}docker-compose.yml",
+  "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
   "initializeCommand": "${localWorkspaceFolder}/.devcontainer/initialize.sh",
   "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/postcreate.sh",
   "workspaceFolder": "/app/${localWorkspaceFolderBasename}",
