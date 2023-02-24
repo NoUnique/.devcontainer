@@ -12,4 +12,4 @@ mkdir -p /home/${USER}/.ssh
 [[ ! -e /home/${USER}/.ssh/config ]] && \
 ( echo "required config not found" && exit 1)
 
-sudo chown -R ${USER}:${USER} /home/${USER}
+sudo chown -R ${USER}:${USER} /home/${USER}/.ssh
