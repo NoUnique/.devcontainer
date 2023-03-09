@@ -169,9 +169,7 @@ function fn_bash() {
 
 function fn_log() {
     fn_is_running
-    echo "Test"
     if [[ "${IS_RUNNING}" != "TRUE" ]]; then
-        echo "Test2"
         fn_run
     fi
     echo "Connect to logs of '${COMPOSE_PROJECT_NAME}' docker container"
